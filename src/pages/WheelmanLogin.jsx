@@ -1,19 +1,32 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import logo from '../assets/logo.png';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { WheelmanDataContext } from '../context/WheelmanContext';
+import axios from 'axios';
 
 const WheelmanLogin = () => {
     const [email, setEmail] = useState('');  //two way binding
     const [password, setPassword] = useState('');
 
-    const [wheelmanData, setWheelmanData] = useState({});
+    const { wheelman, setWheelman } = useContext(WheelmanDataContext);
+    const navigate = useNavigate();
 
-    const formSubmitHandler = (e) => {
+    const formSubmitHandler = async (e) => {
         e.preventDefault();
-        setWheelmanData({
+        const wheelman = ({
             email: email,
             password: password
-        })
+        });
+
+        const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/wheelman/login`, wheelman);
+
+        if(response.status === 200) {
+            const data = response.data;
+            setWheelman(data.wheelman);
+            localStorage.setItem('token', data.token);
+            navigate('/wheelman-home');
+        }
+
         setEmail('');
         setPassword('');
     }

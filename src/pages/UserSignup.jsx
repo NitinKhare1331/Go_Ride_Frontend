@@ -1,6 +1,8 @@
-import React, { useState } from 'react'
-import { Link } from 'react-router-dom';
+import React, { useContext, useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom';
 import logo from '../assets/logo.png';
+import axios from 'axios';
+import { UserDataContext } from '../context/userContext';
 
 const UserSignup = () => {
     const [ email, setEmail ] = useState('')
@@ -9,17 +11,31 @@ const UserSignup = () => {
     const [ lastName, setLastName ] = useState('')
     const [ userData, setUserData ] = useState({})
 
+    const navigate = useNavigate();
 
-    const formSubmitHandler = (e) => {
+    const {user, setUser} = useContext(UserDataContext);
+
+
+    const formSubmitHandler = async (e) => {
         e.preventDefault();
-        setUserData({
+        const newUser = {
+            email,
+            password,
             fullname: {
                 firstname: firstName,
                 lastname: lastName
-            },
-            email: email,
-            password: password
-        });
+            }
+        }
+
+        const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/users/register`, newUser);
+
+        if(response.status === 201) {
+            const data = response.data;
+            setUser(data.user);
+            localStorage.setItem('token', data.token);
+            navigate('/home');
+        }
+
         setFirstName('');
         setLastName('');
         setEmail('');
@@ -45,7 +61,7 @@ const UserSignup = () => {
                         }}
                     />
                     <input 
-                        className='bg-[#eeeeee] rounded px-4 py-2 w-1/2 border text-lg placeholder:text-sm' 
+                        className='bg-[#eeeeee] rounded px-4 py-2 w-1/2 border text-medium placeholder:text-sm' 
                         type='text' 
                         required
                         placeholder='Lastname'
@@ -59,7 +75,7 @@ const UserSignup = () => {
                     What's your email?
                 </h3>
                 <input 
-                    className='bg-[#eeeeee] mb-5 rounded px-4 py-2 border w-full text-lg placeholder:text-sm' 
+                    className='bg-[#eeeeee] mb-5 rounded px-4 py-2 border w-full text-medium placeholder:text-sm' 
                     type='email' 
                     required 
                     placeholder='Enter your email'
@@ -72,7 +88,7 @@ const UserSignup = () => {
                     Enter password
                 </h3>
                 <input 
-                    className='bg-[#eeeeee] mb-5 rounded px-4 py-2 border w-full text-lg placeholder:text-sm' 
+                    className='bg-[#eeeeee] mb-5 rounded px-4 py-2 border w-full text-medium placeholder:text-sm' 
                     type='password' 
                     required 
                     placeholder='Enter your password'
