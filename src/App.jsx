@@ -11,6 +11,7 @@ import UserLogout from './pages/UserLogout'
 import WheelmanHome from './pages/WheelmanHome'
 import WheelmanProtectedWrapper from './pages/WheelmanProtectedWrapper'
 import WheelmanLogout from './pages/WheelmanLogout'
+import Riding from './pages/Riding'
 
 
 function App() {
@@ -22,6 +23,7 @@ function App() {
         <Route path="/signup" element={<UserSignup />} />
         <Route path="/login" element={<UserLogin />} />
         <Route path="/home" element={<UserProtectedWrapper><Home /></UserProtectedWrapper>} />
+        <Route path="/riding" element={<Riding />} />
         <Route path="/user/logout" element={<UserProtectedWrapper><UserLogout /></UserProtectedWrapper>} />
         <Route path="/wheelman-signup" element={<WheelmanSignup />} />
         <Route path="/wheelman-login" element={<WheelmanLogin />} />
